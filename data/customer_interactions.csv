@@ -1,0 +1,61 @@
+interaction_id,customer_id,interaction_date,interaction_type,channel,duration_minutes,satisfaction_score,notes
+1,1,2024-09-20,support,email,15,4,Resolved billing question
+2,1,2024-09-18,feature_usage,app,45,5,Used advanced analytics feature
+3,1,2024-09-15,support,phone,20,4,Help with report generation
+4,2,2024-09-25,feature_usage,app,60,5,Extensive dashboard usage
+5,2,2024-09-22,training,webinar,90,5,Attended product training
+6,2,2024-09-20,feature_usage,app,30,5,Used collaboration tools
+7,3,2024-09-10,support,email,25,2,Complaint about slow loading
+8,3,2024-09-05,support,phone,35,2,Multiple technical issues
+9,3,2024-08-30,support,chat,10,3,Quick question resolved
+10,4,2024-09-24,feature_usage,app,120,5,Power user session
+11,4,2024-09-21,feedback,survey,5,5,Very positive feedback
+12,4,2024-09-19,feature_usage,app,75,5,Used premium features
+13,5,2024-09-08,support,email,40,1,Unresolved technical issue
+14,5,2024-08-25,support,phone,60,2,Escalated to tech team
+15,5,2024-08-20,support,chat,15,2,Login problems
+16,6,2024-09-23,feature_usage,app,35,4,Regular dashboard check
+17,6,2024-09-20,training,video,25,4,Watched tutorial
+18,6,2024-09-17,feature_usage,app,40,4,Report generation
+19,7,2024-09-16,support,email,30,3,Question about pricing
+20,7,2024-09-12,feature_usage,app,20,3,Basic feature usage
+21,7,2024-09-08,support,phone,45,3,Needed guidance on setup
+22,8,2024-09-26,feature_usage,app,90,5,Advanced feature exploration
+23,8,2024-09-24,feedback,email,5,5,Positive product feedback
+24,8,2024-09-21,feature_usage,app,55,5,Dashboard customization
+25,9,2024-09-14,support,chat,20,2,Technical difficulties
+26,9,2024-09-02,support,email,35,2,Data sync issues
+27,9,2024-08-28,support,phone,50,1,Multiple unresolved issues
+28,10,2024-09-22,feature_usage,app,45,4,Regular usage pattern
+29,10,2024-09-19,training,webinar,60,4,Product update session
+30,10,2024-09-16,feature_usage,app,30,4,Report viewing
+31,11,2024-09-25,feature_usage,app,25,4,Getting familiar with features
+32,11,2024-09-20,training,video,30,4,Onboarding tutorials
+33,11,2024-09-15,support,email,10,4,Quick setup question
+34,12,2024-09-12,support,phone,45,2,Integration problems
+35,12,2024-09-05,support,email,30,2,Data import issues
+36,12,2024-08-29,support,chat,25,1,Multiple technical problems
+37,13,2024-09-24,feature_usage,app,55,5,Exploring new features
+38,13,2024-09-21,feedback,survey,3,5,Excellent rating
+39,13,2024-09-18,feature_usage,app,40,4,Regular usage
+40,14,2024-09-26,feature_usage,app,85,5,Power user behavior
+41,14,2024-09-23,feature_usage,app,70,5,Advanced analytics
+42,14,2024-09-20,training,webinar,120,5,Deep dive training
+43,15,2024-09-08,support,email,50,1,Serious technical issues
+44,15,2024-08-30,support,phone,75,1,Escalated multiple times
+45,15,2024-08-22,support,chat,20,2,Basic troubleshooting
+46,16,2024-09-19,feature_usage,app,35,3,Moderate usage
+47,16,2024-09-14,support,email,20,3,Clarification needed
+48,16,2024-09-10,feature_usage,app,25,4,Learning the system
+49,17,2024-09-25,feature_usage,app,50,4,Good engagement
+50,17,2024-09-22,training,video,40,4,Educational content
+51,17,2024-09-18,feature_usage,app,30,4,Regular check-ins
+52,18,2024-09-17,support,phone,35,3,Needed assistance
+53,18,2024-09-12,feature_usage,app,15,3,Light usage
+54,18,2024-09-07,support,email,25,2,Technical question
+55,19,2024-09-23,feature_usage,app,40,4,Good usage pattern
+56,19,2024-09-20,feedback,email,5,4,Positive comments
+57,19,2024-09-16,feature_usage,app,35,4,Dashboard usage
+58,20,2024-09-15,support,chat,30,2,Connection issues
+59,20,2024-09-10,support,email,40,2,Performance problems
+60,20,2024-09-03,support,phone,55,3,Troubleshooting session
