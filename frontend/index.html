@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intelligent Customer Success Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f6fa;
+            color: #333;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            margin-top: 0.5rem;
+        }
+        
+        .dashboard {
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            transition: transform 0.2s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-2px);
+        }
+        
+        .stat-card .icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .stat-card .value {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-card .label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .customers-icon { color: #3b82f6; }
+        .active-icon { color: #10b981; }
+        .risk-icon { color: #ef4444; }
+        .health-icon { color: #f59e0b; }
+        .interactions-icon { color: #8b5cf6; }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .chart-section {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+        
+        .chart-header {
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .chart-header h3 {
+            font-size: 1.3rem;
+            color: #374151;
+        }
+        
+        .customers-section {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+        
+        .customers-list {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        
+        .customer-item {
+            padding: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+            transition: background-color 0.2s ease;
+        }
+        
+        .customer-item:hover {
+            background-color: #f9fafb;
+        }
+        
+        .customer-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .customer-name {
+            font-weight: 600;
+            color: #374151;
+        }
+        
+        .customer-email {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+        
+        .customer-metrics {
+            display: flex;
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+        
+        .metric {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            font-size: 0.8rem;
+        }
+        
+        .health-score {
+            padding: 0.2rem 0.5rem;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+        
+        .health-excellent { background-color: #dcfce7; color: #166534; }
+        .health-good { background-color: #dbeafe; color: #1d4ed8; }
+        .health-fair { background-color: #fef3c7; color: #92400e; }
+        .health-poor { background-color: #fee2e2; color: #dc2626; }
+        
+        .churn-risk {
+            padding: 0.2rem 0.5rem;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+        
+        .risk-high { background-color: #fee2e2; color: #dc2626; }
+        .risk-medium { background-color: #fef3c7; color: #92400e; }
+        .risk-low { background-color: #dcfce7; color: #166534; }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 1rem;
+            background-color: #f3f4f6;
+            border-radius: 8px;
+            padding: 0.25rem;
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            text-align: center;
+            background: none;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+        
+        .tab.active {
+            background: white;
+            color: #667eea;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #6b7280;
+        }
+        
+        .error {
+            background-color: #fee2e2;
+            color: #dc2626;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+        
+        .test-section {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            margin-top: 2rem;
+        }
+        
+        .test-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+        
+        .test-btn {
+            padding: 0.75rem 1.5rem;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.2s ease;
+        }
+        
+        .test-btn:hover {
+            background: #5a67d8;
+        }
+        
+        .test-results {
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: #f9fafb;
+            border-radius: 8px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+            
+            .dashboard {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1><i class="fas fa-chart-line"></i> Intelligent Customer Success Dashboard</h1>
+        <p>AI-powered customer churn prediction, health scoring, and intervention recommendations</p>
+    </header>
+
+    <div class="dashboard">
+        <!-- Stats Overview -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="icon customers-icon"><i class="fas fa-users"></i></div>
+                <div class="value" id="total-customers">-</div>
+                <div class="label">Total Customers</div>
+            </div>
+            <div class="stat-card">
+                <div class="icon active-icon"><i class="fas fa-user-check"></i></div>
+                <div class="value" id="active-customers">-</div>
+                <div class="label">Active Customers</div>
+            </div>
+            <div class="stat-card">
+                <div class="icon risk-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                <div class="value" id="churn-risk-customers">-</div>
+                <div class="label">High Churn Risk</div>
+            </div>
+            <div class="stat-card">
+                <div class="icon health-icon"><i class="fas fa-heart"></i></div>
+                <div class="value" id="avg-health-score">-</div>
+                <div class="label">Avg Health Score</div>
+            </div>
+            <div class="stat-card">
+                <div class="icon interactions-icon"><i class="fas fa-comments"></i></div>
+                <div class="value" id="recent-interactions">-</div>
+                <div class="label">Recent Interactions</div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Charts Section -->
+            <div class="chart-section">
+                <div class="tabs">
+                    <button class="tab active" onclick="switchTab('churn-trend')">Churn Trend</button>
+                    <button class="tab" onclick="switchTab('health-distribution')">Health Distribution</button>
+                </div>
+                
+                <div id="churn-trend" class="tab-content active">
+                    <div class="chart-header">
+                        <h3>Customer Churn Trend</h3>
+                    </div>
+                    <canvas id="churnChart" width="400" height="200"></canvas>
+                </div>
+                
+                <div id="health-distribution" class="tab-content">
+                    <div class="chart-header">
+                        <h3>Health Score Distribution</h3>
+                    </div>
+                    <canvas id="healthChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+
+            <!-- Customers at Risk -->
+            <div class="customers-section">
+                <div class="chart-header">
+                    <h3>High-Risk Customers</h3>
+                </div>
+                <div id="high-risk-customers" class="customers-list">
+                    <div class="loading">Loading customers...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- All Customers -->
+        <div class="customers-section">
+            <div class="chart-header">
+                <h3>All Customers</h3>
+            </div>
+            <div id="all-customers" class="customers-list">
+                <div class="loading">Loading customers...</div>
+            </div>
+        </div>
+
+        <!-- Testing Section -->
+        <div class="test-section">
+            <div class="chart-header">
+                <h3>Testing & Examples</h3>
+                <p>Test the AI models with different customer scenarios</p>
+            </div>
+            <div class="test-buttons">
+                <button class="test-btn" onclick="testHighRiskCustomer()">Test High Risk Customer</button>
+                <button class="test-btn" onclick="testHealthyCustomer()">Test Healthy Customer</button>
+                <button class="test-btn" onclick="testNewCustomer()">Test New Customer</button>
+                <button class="test-btn" onclick="testChurnPrediction()">Test Churn Prediction</button>
+            </div>
+            <div id="test-results" class="test-results" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let churnChart = null;
+        let healthChart = null;
+        let customersData = [];
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDashboardStats();
+            loadCustomers();
+            loadChurnTrend();
+            loadHealthDistribution();
+        });
+
+        // Load dashboard statistics
+        async function loadDashboardStats() {
+            try {
+                const response = await fetch('/api/dashboard-stats');
+                const stats = await response.json();
+                
+                document.getElementById('total-customers').textContent = stats.total_customers;
+                document.getElementById('active-customers').textContent = stats.active_customers;
+                document.getElementById('churn-risk-customers').textContent = stats.churn_risk_customers;
+                document.getElementById('avg-health-score').textContent = stats.avg_health_score;
+                document.getElementById('recent-interactions').textContent = stats.recent_interactions;
+            } catch (error) {
+                console.error('Error loading dashboard stats:', error);
+            }
+        }
+
+        // Load customers data
+        async function loadCustomers() {
+            try {
+                const response = await fetch('/api/customers');
+                customersData = await response.json();
+                
+                displayHighRiskCustomers();
+                displayAllCustomers();
+            } catch (error) {
+                console.error('Error loading customers:', error);
+                document.getElementById('high-risk-customers').innerHTML = '<div class="error">Error loading customers</div>';
+                document.getElementById('all-customers').innerHTML = '<div class="error">Error loading customers</div>';
+            }
+        }
+
+        // Display high-risk customers
+        function displayHighRiskCustomers() {
+            const highRiskCustomers = customersData.filter(customer => customer.churn_probability > 0.6);
+            const container = document.getElementById('high-risk-customers');
+            
+            if (highRiskCustomers.length === 0) {
+                container.innerHTML = '<div class="loading">No high-risk customers found</div>';
+                return;
+            }
+            
+            container.innerHTML = highRiskCustomers.map(customer => createCustomerHTML(customer)).join('');
+        }
+
+        // Display all customers
+        function displayAllCustomers() {
+            const container = document.getElementById('all-customers');
+            container.innerHTML = customersData.map(customer => createCustomerHTML(customer)).join('');
+        }
+
+        // Create customer HTML
+        function createCustomerHTML(customer) {
+            const healthClass = getHealthClass(customer.health_score);
+            const riskClass = getRiskClass(customer.churn_probability);
+            
+            return `
+                <div class="customer-item">
+                    <div class="customer-header">
+                        <div>
+                            <div class="customer-name">${customer.name}</div>
+                            <div class="customer-email">${customer.email}</div>
+                        </div>
+                    </div>
+                    <div class="customer-metrics">
+                        <div class="metric">
+                            <span class="health-score ${healthClass}">${customer.health_score}% Health</span>
+                        </div>
+                        <div class="metric">
+                            <span class="churn-risk ${riskClass}">${Math.round(customer.churn_probability * 100)}% Churn Risk</span>
+                        </div>
+                        <div class="metric">
+                            <i class="fas fa-dollar-sign"></i> $${customer.monthly_revenue}
+                        </div>
+                        <div class="metric">
+                            <i class="fas fa-calendar"></i> ${customer.tenure_months}mo
+                        </div>
+                    </div>
+                    ${customer.recommendations ? `
+                        <div style="margin-top: 0.5rem; font-size: 0.8rem; color: #666;">
+                            <strong>Recommendations:</strong> ${customer.recommendations.slice(0, 2).map(r => r.action).join(', ')}
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+        }
+
+        // Get health class
+        function getHealthClass(score) {
+            if (score >= 90) return 'health-excellent';
+            if (score >= 70) return 'health-good';
+            if (score >= 50) return 'health-fair';
+            return 'health-poor';
+        }
+
+        // Get risk class
+        function getRiskClass(risk) {
+            if (risk > 0.7) return 'risk-high';
+            if (risk > 0.4) return 'risk-medium';
+            return 'risk-low';
+        }
+
+        // Load churn trend chart
+        async function loadChurnTrend() {
+            try {
+                const response = await fetch('/api/analytics/churn-trend');
+                const data = await response.json();
+                
+                const ctx = document.getElementById('churnChart').getContext('2d');
+                
+                if (churnChart) {
+                    churnChart.destroy();
+                }
+                
+                churnChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: data.months,
+                        datasets: [{
+                            label: 'Churn Rate %',
+                            data: data.churn_rate,
+                            borderColor: '#ef4444',
+                            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                            tension: 0.4
+                        }, {
+                            label: 'New Customers',
+                            data: data.customer_count,
+                            borderColor: '#3b82f6',
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            tension: 0.4,
+                            yAxisID: 'y1'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Churn Rate %'
+                                }
+                            },
+                            y1: {
+                                type: 'linear',
+                                display: true,
+                                position: 'right',
+                                title: {
+                                    display: true,
+                                    text: 'Customer Count'
+                                },
+                                grid: {
+                                    drawOnChartArea: false,
+                                }
+                            }
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Error loading churn trend:', error);
+            }
+        }
+
+        // Load health distribution chart
+        async function loadHealthDistribution() {
+            try {
+                const response = await fetch('/api/analytics/health-distribution');
+                const data = await response.json();
+                
+                const ctx = document.getElementById('healthChart').getContext('2d');
+                
+                if (healthChart) {
+                    healthChart.destroy();
+                }
+                
+                healthChart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: Object.keys(data),
+                        datasets: [{
+                            data: Object.values(data),
+                            backgroundColor: [
+                                '#10b981',
+                                '#3b82f6',
+                                '#f59e0b',
+                                '#ef4444'
+                            ]
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            }
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Error loading health distribution:', error);
+            }
+        }
+
+        // Switch tabs
+        function switchTab(tabName) {
+            // Update tab buttons
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Update tab content
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(tabName).classList.add('active');
+        }
+
+        // Test functions
+        async function testHighRiskCustomer() {
+            const testData = {
+                tenure_months: 3,
+                monthly_revenue: 45,
+                total_interactions: 8,
+                support_tickets: 6,
+                last_login_days: 21,
+                feature_usage_score: 1.2
+            };
+            
+            await runTest('High Risk Customer', testData);
+        }
+
+        async function testHealthyCustomer() {
+            const testData = {
+                tenure_months: 24,
+                monthly_revenue: 350,
+                total_interactions: 85,
+                support_tickets: 1,
+                last_login_days: 1,
+                feature_usage_score: 4.8
+            };
+            
+            await runTest('Healthy Customer', testData);
+        }
+
+        async function testNewCustomer() {
+            const testData = {
+                tenure_months: 1,
+                monthly_revenue: 150,
+                total_interactions: 5,
+                support_tickets: 2,
+                last_login_days: 3,
+                feature_usage_score: 2.5
+            };
+            
+            await runTest('New Customer', testData);
+        }
+
+        async function testChurnPrediction() {
+            const testData = {
+                tenure_months: 6,
+                monthly_revenue: 75,
+                total_interactions: 15,
+                support_tickets: 4,
+                last_login_days: 14,
+                feature_usage_score: 2.1
+            };
+            
+            await runTest('Churn Prediction Test', testData);
+        }
+
+        async function runTest(testName, testData) {
+            const resultsDiv = document.getElementById('test-results');
+            resultsDiv.style.display = 'block';
+            resultsDiv.textContent = 'Running test...';
+            
+            try {
+                // Test churn prediction
+                const churnResponse = await fetch('/api/predict-churn', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(testData)
+                });
+                const churnResult = await churnResponse.json();
+                
+                // Test health score
+                const healthResponse = await fetch('/api/health-score', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(testData)
+                });
+                const healthResult = await healthResponse.json();
+                
+                // Test recommendations
+                const recResponse = await fetch('/api/recommendations', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(testData)
+                });
+                const recResult = await recResponse.json();
+                
+                // Display results
+                resultsDiv.textContent = `${testName} Results:
+
+Input Data:
+${JSON.stringify(testData, null, 2)}
+
+Churn Prediction:
+- Probability: ${(churnResult.churn_probability * 100).toFixed(1)}%
+- Risk Level: ${churnResult.risk_level}
+
+Health Score:
+- Score: ${healthResult.health_score}/100
+- Status: ${healthResult.health_status}
+
+Recommendations:
+${recResult.recommendations.map(r => `- ${r.action} (${r.priority} priority)`).join('\n')}`;
+                
+            } catch (error) {
+                resultsDiv.textContent = `Error running test: ${error.message}`;
+            }
+        }
+    </script>
+</body>
+</html>
