@@ -49,6 +49,9 @@ python app.py
 The dashboard will be available at: http://localhost:5000
 
 ## 📊 How to Use
+<img width="3786" height="1653" alt="image" src="https://github.com/user-attachments/assets/61a224e0-5942-423a-bd9a-51e3f01c73fd" />
+<img width="3783" height="1650" alt="image" src="https://github.com/user-attachments/assets/8a701dd9-d455-4765-bee0-681952548558" />
+
 
 ### 1. Dashboard Overview
 - View key metrics: total customers, active customers, high-risk customers
@@ -253,5 +256,6 @@ For questions or issues:
 - Verify all dependencies are installed correctly
 
 ---
+
 
 **Built with ❤️ for Customer Success Teams**
